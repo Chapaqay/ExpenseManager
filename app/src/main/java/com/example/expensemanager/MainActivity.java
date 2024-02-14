@@ -25,6 +25,7 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
     ActivityMainBinding binding;
     private ExpensesAdapter expensesAdapter;
     Intent intent;
+    private long income=0, expense=0;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -84,6 +85,7 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
     @Override
     protected void onResume() {
         super.onResume();
+        income=0; expense=0;
         getData();
     }
 
@@ -100,11 +102,19 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
                         List<DocumentSnapshot> dsList = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot ds:dsList){
                             ExpenseModel expenseModel = ds.toObject(ExpenseModel.class);
+                            if (expenseModel.getType().equals("Income")){
+                               income+=expenseModel.getAmount();
+                            }else {
+                                expense+=expenseModel.getAmount();
+                            }
                             expensesAdapter.add(expenseModel);
                         }
-
+                        setUpGraph();
                     }
                 });
+    }
+
+    private void setUpGraph() {
     }
 
     @Override
