@@ -8,9 +8,9 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import com.example.expensemanager.databinding.ActivityAddExpenseBinding;
-import com.google.firebase.Firebase;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
 
@@ -29,6 +29,7 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         type = getIntent().getStringExtra("type");
         expenseModel =(ExpenseModel) getIntent().getSerializableExtra("model");
+
         if (type==null){
             type = expenseModel.getType();
             binding.amount.setText(String.valueOf(expenseModel.getAmount()));
@@ -60,7 +61,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater menuInflater = getMenuInflater();
-        if (type!=null){
+        if (expenseModel==null){
             menuInflater.inflate(R.menu.add_menu, menu);
         }else {
             menuInflater.inflate(R.menu.update_menu, menu);
@@ -100,6 +101,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         String amount = binding.amount.getText().toString();
         String note = binding.note.getText().toString();
         String category = binding.category.getText().toString();
+
         boolean incomeChecked = binding.incomeRadio.isChecked();
         if (incomeChecked){
             type = "Income";
@@ -128,6 +130,7 @@ public class AddExpenseActivity extends AppCompatActivity {
         String amount = binding.amount.getText().toString();
         String note = binding.note.getText().toString();
         String category = binding.category.getText().toString();
+
         boolean incomeChecked = binding.incomeRadio.isChecked();
         if (incomeChecked){
             type = "Income";
