@@ -11,6 +11,9 @@ import android.view.View;
 import android.widget.Toast;
 
 import com.example.expensemanager.databinding.ActivityMainBinding;
+import com.github.mikephil.charting.data.PieData;
+import com.github.mikephil.charting.data.PieDataSet;
+import com.github.mikephil.charting.data.PieEntry;
 import com.google.android.gms.tasks.OnFailureListener;
 import com.google.android.gms.tasks.OnSuccessListener;
 import com.google.firebase.auth.AuthResult;
@@ -19,12 +22,13 @@ import com.google.firebase.firestore.DocumentSnapshot;
 import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.QuerySnapshot;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends AppCompatActivity implements OnItemsClick {
     ActivityMainBinding binding;
     private ExpensesAdapter expensesAdapter;
-    Intent intent;
+    //Intent intent;
     private long income=0, expense=0;
 
     @Override
@@ -37,11 +41,11 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
         binding.recycler.setAdapter(expensesAdapter);
         binding.recycler.setLayoutManager(new LinearLayoutManager(this));
 
-        intent = new Intent(MainActivity.this, AddExpenseActivity.class);
 
         binding.addIncome.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
                 intent.putExtra("type", "Income");
                 startActivity(intent);
             }
@@ -49,6 +53,7 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
         binding.addExpense.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
+                Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
                 intent.putExtra("type", "Expense");
                 startActivity(intent);
             }
@@ -110,15 +115,37 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
                             expensesAdapter.add(expenseModel);
                         }
                         setUpGraph();
+
                     }
                 });
     }
 
     private void setUpGraph() {
+        List<PieEntry> pieEntryList=new ArrayList<>();
+        List<Integer> colorList=new ArrayList<>();
+        if (income!=0) {
+            pieEntryList.add(new PieEntry(income, "Income"));
+            colorList.add(getResources().getColor(R.color.green));
+        }
+        if (expense!=0) {
+            pieEntryList.add(new PieEntry(expense, "Expense"));
+            colorList.add(getResources().getColor(R.color.red));
+        }
+        PieDataSet pieDataSet=new PieDataSet(pieEntryList,String.valueOf(income=expense));
+        pieDataSet.setColors(colorList);
+        pieDataSet.setValueTextColor(getResources().getColor(R.color.white));
+        PieData pieDat= new PieData(pieDataSet);
+
+
+        binding.pieChart.setData(pieDat);
+        binding.pieChart.invalidate();
+
+
     }
 
     @Override
     public void onClick(ExpenseModel expenseModel) {
+        Intent intent = new Intent(MainActivity.this, AddExpenseActivity.class);
         intent.putExtra("model", expenseModel);
         startActivity(intent);
     }
