@@ -70,7 +70,6 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.MyView
     public static class MyViewHolder extends RecyclerView.ViewHolder{
 
         private final TextView note;
-        private final TextView date;
         private final TextView amount;
         private final TextView category;
         private final CardView card;
@@ -78,13 +77,9 @@ public class ExpensesAdapter extends RecyclerView.Adapter<ExpensesAdapter.MyView
             super(itemView);
             note = itemView.findViewById(R.id.note);
             category = itemView.findViewById(R.id.category);
-            date = itemView.findViewById(R.id.date);
+            TextView date = itemView.findViewById(R.id.date);
             amount = itemView.findViewById(R.id.amount);
             card = itemView.findViewById(R.id.item_card);
-        }
-
-        public TextView getDate() {
-            return date;
         }
     }
 }

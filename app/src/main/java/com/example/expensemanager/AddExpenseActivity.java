@@ -15,8 +15,6 @@ import com.google.firebase.firestore.FirebaseFirestore;
 import com.google.firebase.firestore.SetOptions;
 
 import java.util.Calendar;
-import java.util.HashMap;
-import java.util.Map;
 import java.util.UUID;
 
 public class AddExpenseActivity extends AppCompatActivity {
