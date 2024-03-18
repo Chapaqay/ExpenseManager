@@ -25,6 +25,7 @@ import com.google.firebase.firestore.QuerySnapshot;
 import java.util.ArrayList;
 import java.util.List;
 
+/** @noinspection deprecation*/
 public class MainActivity extends AppCompatActivity implements OnItemsClick {
     ActivityMainBinding binding;
     private ExpensesAdapter expensesAdapter;
@@ -107,6 +108,7 @@ public class MainActivity extends AppCompatActivity implements OnItemsClick {
                         List<DocumentSnapshot> dsList = queryDocumentSnapshots.getDocuments();
                         for (DocumentSnapshot ds:dsList){
                             ExpenseModel expenseModel = ds.toObject(ExpenseModel.class);
+                            assert expenseModel != null;
                             if (expenseModel.getType().equals("Income")){
                                income+=expenseModel.getAmount();
                             }else {
