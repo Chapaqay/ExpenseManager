@@ -82,7 +82,7 @@ public class AddExpenseActivity extends AppCompatActivity {
     private void deleteExpense() {
         FirebaseFirestore
                 .getInstance()
-                .collection("expense")
+                .collection("expenses")
                 .document(expenseModel.getExpenseId())
                 .delete();
         finish();
