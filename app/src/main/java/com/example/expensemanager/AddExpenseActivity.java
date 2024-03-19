@@ -1,10 +1,10 @@
 package com.example.expensemanager;
 
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+import android.view.View;
 
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
@@ -12,16 +12,15 @@ import androidx.appcompat.app.AppCompatActivity;
 import com.example.expensemanager.databinding.ActivityAddExpenseBinding;
 import com.google.firebase.auth.FirebaseAuth;
 import com.google.firebase.firestore.FirebaseFirestore;
-import com.google.firebase.firestore.SetOptions;
 
 import java.util.Calendar;
 import java.util.UUID;
+
 
 public class AddExpenseActivity extends AppCompatActivity {
     ActivityAddExpenseBinding binding;
     private String type;
     private ExpenseModel expenseModel;
-
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -30,10 +29,8 @@ public class AddExpenseActivity extends AppCompatActivity {
 
         type = getIntent().getStringExtra("type");
         expenseModel = (ExpenseModel) getIntent().getSerializableExtra("model");
-        if (expenseModel != null) Log.d("TAG", expenseModel.getExpenseId());
 
         if (type == null) {
-            assert expenseModel != null;
             type = expenseModel.getType();
             binding.amount.setText(String.valueOf(expenseModel.getAmount()));
             binding.category.setText(expenseModel.getCategory());
@@ -46,8 +43,18 @@ public class AddExpenseActivity extends AppCompatActivity {
             binding.expenseRadio.setChecked(true);
         }
 
-        binding.incomeRadio.setOnClickListener(view -> type = "Income");
-        binding.expenseRadio.setOnClickListener(view -> type = "Expense");
+        binding.incomeRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                type="Income";
+            }
+        });
+        binding.expenseRadio.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                type="Expense";
+            }
+        });
 
     }
 
@@ -117,18 +124,12 @@ public class AddExpenseActivity extends AppCompatActivity {
         finish();
 
     }
-
     private void updateExpense() {
 
         String expenseId = expenseModel.getExpenseId();
-        Log.d("TAG", expenseId);
         String amount = binding.amount.getText().toString();
         String note = binding.note.getText().toString();
         String category = binding.category.getText().toString();
-
-        expenseModel.setAmount(Long.parseLong(amount));
-        expenseModel.setNote(note);
-        expenseModel.setCategory(category);
 
         boolean incomeChecked = binding.incomeRadio.isChecked();
         if (incomeChecked) {
@@ -141,14 +142,15 @@ public class AddExpenseActivity extends AppCompatActivity {
             binding.amount.setError("Empty");
             return;
         }
+        ExpenseModel model = new ExpenseModel(expenseId, note, category, type, Long.parseLong(amount), expenseModel.getTime(),
+                FirebaseAuth.getInstance().getUid());
 
         FirebaseFirestore
                 .getInstance()
                 .collection("expenses")
-                .document(expenseModel.getExpenseId())
-                .set(expenseModel, SetOptions.mergeFields());
-
-
+                .document(expenseId)
+                .set(model);
         finish();
+
     }
 }
